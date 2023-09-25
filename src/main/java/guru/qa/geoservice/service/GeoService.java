@@ -1,6 +1,7 @@
 package guru.qa.geoservice.service;
 
 import guru.qa.geoservice.data.GeoRepository;
+import guru.qa.geoservice.data.entity.GeoEntity;
 import guru.qa.geoservice.domain.GeoJson;
 import org.apache.commons.collections4.IterableUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,4 +27,27 @@ public class GeoService {
                 .collect(Collectors.toList());
     }
 
+    public GeoEntity addGeo(GeoJson geoJson) {
+        GeoEntity entity = new GeoEntity();
+        entity.setCountryName(geoJson.countryName());
+        entity.setCountryCode(geoJson.countryCode());
+        return geoRepository.save(entity);
+    }
+
+    public GeoEntity updateGeoName(String oldName, String newName) {
+        var geoEntity = geoRepository.findAll()
+                .stream()
+                .filter(geo -> geo.getCountryName().equals(oldName))
+                .findFirst();
+
+        if (geoEntity.isPresent()) {
+            GeoEntity entity = geoEntity.get();
+            entity.setCountryName(newName);
+            return geoRepository.save(entity);
+        } else {
+            GeoEntity empty = new GeoEntity();
+            empty.setCountryName("No country name " + oldName);
+            return empty;
+        }
+    }
 }
