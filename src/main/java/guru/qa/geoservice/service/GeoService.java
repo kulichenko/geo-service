@@ -28,10 +28,17 @@ public class GeoService {
     }
 
     public GeoEntity addGeo(GeoJson geoJson) {
-        GeoEntity entity = new GeoEntity();
-        entity.setCountryName(geoJson.countryName());
-        entity.setCountryCode(geoJson.countryCode());
-        return geoRepository.save(entity);
+        var geoEntity = geoRepository.findAll()
+                .stream()
+                .filter(geo -> geo.getCountryName().equals(geoJson.countryName())
+                        || geo.getCountryCode().equals(geoJson.countryCode()))
+                .findFirst();
+        if (geoEntity.isEmpty()) {
+            GeoEntity entity = new GeoEntity();
+            entity.setCountryName(geoJson.countryName());
+            entity.setCountryCode(geoJson.countryCode());
+            return geoRepository.save(entity);
+        } else throw new RuntimeException("Country or code are already exist");
     }
 
     public GeoEntity updateGeoName(String oldName, String newName) {

@@ -18,9 +18,9 @@ public class GeoEntity {
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "country_name")
+    @Column(name = "country_name", unique = true)
     private String countryName;
-    @Column(name = "country_code")
+    @Column(name = "country_code", unique = true)
     private String countryCode;
 
     public UUID getId() {
