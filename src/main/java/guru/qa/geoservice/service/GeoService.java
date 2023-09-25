@@ -38,16 +38,10 @@ public class GeoService {
         var geoEntity = geoRepository.findAll()
                 .stream()
                 .filter(geo -> geo.getCountryName().equals(oldName))
-                .findFirst();
-
-        if (geoEntity.isPresent()) {
-            GeoEntity entity = geoEntity.get();
-            entity.setCountryName(newName);
-            return geoRepository.save(entity);
-        } else {
-            GeoEntity empty = new GeoEntity();
-            empty.setCountryName("No country name " + oldName);
-            return empty;
-        }
+                .findFirst()
+                .orElseThrow(() ->
+                        new RuntimeException("No country with name " + oldName));
+        geoEntity.setCountryName(newName);
+        return geoRepository.save(geoEntity);
     }
 }
